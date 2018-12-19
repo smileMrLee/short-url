@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>AShow</title>
+    <meta name="keywords" content="视频模板,Action Show, Action A show, 爱秀,任你尽情发挥!">
+    <meta name="description" content="每个人都是天生的导演,从出生那一刻起,我们就已经开始了导演自己的人生.Action A show, 爱秀,任你尽情发挥!">
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+    <link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="/css/animate.min.css" rel="stylesheet">
+    <link href="/css/style.min.css?v=4.0.0" rel="stylesheet"><base target="_blank">
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>生成短链接</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="form_basic.html#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="form_basic.html#">选项1</a>
+                            </li>
+                            <li><a href="form_basic.html#">选项2</a>
+                            </li>
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form role="form" class="form-inline">
+                        <div class="form-group">
+                            <label for="urlText" class="sr-only">长连接</label>
+                            <input type="url" placeholder="请输入长链接" id="urlText" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="urlBakText" class="sr-only">备用长连接</label>
+                            <input type="url" placeholder="请输入第二备用长链接" id="urlBakText" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="domainText" class="sr-only">域名</label>
+                            <input type="text" placeholder="请输入域名" id="domainText" class="form-control" value="s.jinhant.com">
+                        </div>
+                    </form>
+                </div>
+                <div class="ibox-content">
+                    <form role="form" class="form-inline">
+                        <div class="form-group">
+                            <label class="col-sm-9 control-label">启用备用链接</label>
+                            <select class="form-control m-b" id="isOpenBak" name="isOpenBak" aria-required="true">
+                                <option value="0">否</option>
+                                <option value="1">是</option>
+                            </select>
+                        </div>
+                        <div class="checkbox m-l m-r-xs">
+                            <label class="i-checks">
+                                <div class="icheckbox_square-green" style="position: relative;"><input type="checkbox" style="position: absolute; opacity: 0;">
+                                    <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+                                </div>
+                                <i></i> 启动备用链接
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-primary" type="button" id="generateUrl">生成短连接</button>
+                                <button class="btn btn-success" type="button" id="copyShortUrl" onclick="jsCopy('shortsUrlText')">一键复制</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="ibox-content">
+                    <p>短链接:</p>
+                    <p id="shortsUrlText"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function jsCopy(id){
+        var e=document.getElementById(id);
+        e.select();
+        document.execCommand("Copy");
+        alert("复制成功！");
+    }
+</script>
+
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+<script src="/js/content.min.js?v=1.0.0"></script>
+<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/js/plugins/validate/messages_zh.min.js"></script>
+<script src="/js/demo/form-validate-demo.min.js"></script>
+<script src="/js/plugins/iCheck/icheck.min.js"></script>
+<script src="/js/plugins/peity/jquery.peity.min.js"></script>
+<script src="/js/demo/peity-demo.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $(".i-checks").iCheck({
+            checkboxClass: "icheckbox_square-green",
+            radioClass: "iradio_square-green",
+        });
+
+        $("#generateUrl").bind("click", function(){
+            var url = $("#urlText").val();
+            var domain = $("#domainText").val();
+
+            var bakUrl = $("#urlBakText").val();
+            var isOpenBak = $("#isOpenBak").val();
+
+            $.ajax({
+                async : false,
+                type: "POST",
+                url: "/url/shorts/generate",
+                data : {
+                    sourceUrl: url,
+                    bakUrl: bakUrl,
+                    isOpenBak: isOpenBak,
+                    domain: domain
+                },
+                dataType : "json",
+                success: function($json){
+                    if($json.result!=null){
+                        $("#shortsUrlText").text($json.result);
+                    }else{
+                        alert($json.message);
+                    }
+                },
+                error: function($json){
+                    //请求出错处理
+                    alert($json.result + $json.message);
+                }
+            });
+        });
+    });
+</script>
+</body>
+
+</html>

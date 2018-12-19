@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <title>clipboard示例</title>
+    <script src="/js/clipboard.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    function jsCopy(id){
+        var e=document.getElementById(id);
+        e.select();
+        document.execCommand("Copy");
+        alert("复制成功！");
+    }
+</script>
+<textarea cols="60" name="content" rows="2" id="content">www.yiwuku.com</textarea>
+<input type=button value="复制" onclick="jsCopy('content')">
+</body>
+</html>
